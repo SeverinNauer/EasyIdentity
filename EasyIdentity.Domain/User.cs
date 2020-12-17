@@ -36,14 +36,13 @@ namespace EasyIdentity.Domain
             this.userRecord = userRecord;
         }
 
-        public static Either<DomainError, User> TryCreateNew(string email, string password, Option<string> username)
+        public static Either<DomainError, User> TrySignUp(string email, string password, Option<string> username)
         {
-            var userId = UserId.Create(Guid.NewGuid());
 
             Either<DomainError, User> createUser(Option<Username> username) =>
                 from emailAddr in EmailAddress.TryCreate(email).CastDomainError()
                 from password in Password.TryCreate(password).CastDomainError()
-                select new User(userId, emailAddr, password, username, EmailVerificationState.Unverified);
+                select new User(UserId.Create(Guid.NewGuid()), emailAddr, password, username, EmailVerificationState.Unverified);
 
             return username
                 .Map(username => EasyIdentity.Domain.Username.TryCreate(username).CastDomainError())
@@ -56,16 +55,6 @@ namespace EasyIdentity.Domain
         public User ChangePassword(Password newPassword)
         {
             return new User(userRecord with { Password = newPassword });
-        }
-
-        public bool IsValidLoginUsername(string username, string password)
-        {
-            return Username.Match(usernameUnwrapped => usernameUnwrapped == username && Password == password, () => false);
-        }
-
-        public bool IsValidLoginEmail(string email, string password)
-        {
-            return Email == email && Password == password;
         }
 
         public User VerifyEmail()
