@@ -129,7 +129,7 @@ namespace EasyIdentity.Domain
         {
             public override int ErrorCode => 10;
 
-            public override string Message => "The provided email can not be empty";
+            public override string Message => "The provided password can not be empty";
         }
 
         private Password(string value) : base(value)

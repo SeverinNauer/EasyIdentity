@@ -3,7 +3,7 @@ using static LanguageExt.Prelude;
 
 namespace EasyIdentity.Domain
 {
-    public class EmailAddress : TypeWrapper<string>
+    public sealed class EmailAddress : TypeWrapper<string>
     {
         private EmailAddress(string value) : base(value)
         {
