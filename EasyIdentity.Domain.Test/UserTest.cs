@@ -7,25 +7,25 @@ namespace EasyIdentity.Domain.Test
     public class UserTest
     {
         [Fact]
-        public void CreateNewUserSuccess()
+        public void SignUpSuccess()
         {
-            var userEither = User.TryCreateNew("severin.nauer@gmail.com", "Test1234!", "testname");
+            var userEither = User.TrySignUp("severin.nauer@gmail.com", "Test1234!", "testname");
             Assert.True(userEither.IsRight);
             userEither.IfRight(user =>
             {
-                Assert.Equal("severin.nauer@gmail.com", user.Email.Value);
+                Assert.Equal("severin.nauer@gmail.com", user.Email);
                 Assert.Equal("Test1234!", user.Password);
                 user.Username.IfSome(username =>
                 {
-                    Assert.Equal("testname", username.Value);
+                    Assert.Equal("testname", username);
                 });
             });
         }
 
         [Fact]
-        public void CreateUserNoUsername()
+        public void SignupNoUsername()
         {
-            var userEither = User.TryCreateNew("severin.nauer@gmail.com", "Test1234!", None);
+            var userEither = User.TrySignUp("severin.nauer@gmail.com", "Test1234!", None);
             Assert.True(userEither.IsRight);
             userEither.IfRight(user =>
             {
@@ -36,7 +36,7 @@ namespace EasyIdentity.Domain.Test
         [Fact]
         public void ChangePassword()
         {
-            var userEither = User.TryCreateNew("severin.nauer@gmail.com", "Test1234!", "testname");
+            var userEither = User.TrySignUp("severin.nauer@gmail.com", "Test1234!", "testname");
             userEither.IfRight(user =>
             {
                 Assert.Equal("Test1234!", user.Password);
@@ -52,14 +52,14 @@ namespace EasyIdentity.Domain.Test
         [Fact]
         public void CreateUserInvalidEmail()
         {
-            var userEither = User.TryCreateNew("", "Test1234!", "testname");
+            var userEither = User.TrySignUp("", "Test1234!", "testname");
             Assert.True(userEither.IsLeft);
             userEither.IfLeft(error =>
             {
                 Assert.True(error is EmailAddress.NoEmptyEmail);
             });
 
-            var userEither2 = User.TryCreateNew("test.test.com", "Test12345!", None);
+            var userEither2 = User.TrySignUp("test.test.com", "Test12345!", None);
             Assert.True(userEither2.IsLeft);
             userEither2.IfLeft(error =>
             {
@@ -70,7 +70,7 @@ namespace EasyIdentity.Domain.Test
         [Fact]
         public void CreateUserInvalidUsername()
         {
-            var userEither = User.TryCreateNew("severin.nauer@gmail.com", "Test1234!", "");
+            var userEither = User.TrySignUp("severin.nauer@gmail.com", "Test1234!", "");
             Assert.True(userEither.IsLeft);
             userEither.IfLeft(error =>
             {
@@ -81,7 +81,7 @@ namespace EasyIdentity.Domain.Test
         [Fact]
         public void VerifyEmail()
         {
-            var userMaybe = User.TryCreateNew("test@test.com", "Test1234!", None);
+            var userMaybe = User.TrySignUp("test@test.com", "Test1234!", None);
             userMaybe.IfRight(user =>
             {
                 var verifiedUser = user.VerifyEmail();

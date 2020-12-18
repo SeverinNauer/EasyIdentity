@@ -38,18 +38,17 @@ namespace EasyIdentity.Domain
 
         public static Either<DomainError, User> TrySignUp(string email, string password, Option<string> username)
         {
-
-            Either<DomainError, User> createUser(Option<Username> username) =>
-                from emailAddr in EmailAddress.TryCreate(email).CastDomainError()
-                from password in Password.TryCreate(password).CastDomainError()
-                select new User(UserId.Create(Guid.NewGuid()), emailAddr, password, username, EmailVerificationState.Unverified);
-
             return username
                 .Map(username => EasyIdentity.Domain.Username.TryCreate(username).CastDomainError())
                 .Match(
                     usnameEither => usnameEither.Bind(usernameValue => createUser(usernameValue)),
                     () => createUser(None)
                 );
+
+            Either<DomainError, User> createUser(Option<Username> username) =>
+              from emailAddr in EmailAddress.TryCreate(email).CastDomainError()
+              from password in Password.TryCreate(password).CastDomainError()
+              select new User(UserId.Create(Guid.NewGuid()), emailAddr, password, username, EmailVerificationState.Unverified);
         }
 
         public User ChangePassword(Password newPassword)
@@ -70,9 +69,7 @@ namespace EasyIdentity.Domain
 
     public sealed class UserId : TypeWrapper<Guid>
     {
-        private UserId(Guid id) : base(id)
-        {
-        }
+        private UserId(Guid id) : base(id){}
 
         public static UserId Create(Guid id)
         {
@@ -82,12 +79,12 @@ namespace EasyIdentity.Domain
 
     public sealed class Username : TypeWrapper<string>
     {
-        public abstract class UsernameError : DomainError
+        public abstract class InvalidUsernameError : DomainError
         {
             public override ErrorSection Section => ErrorSection.Username;
         }
 
-        public class UsernameTooShort : UsernameError
+        public class UsernameTooShort : InvalidUsernameError
         {
             public override int ErrorCode => 10;
             public override string Message => "The username must contain at least 8 characters";
@@ -97,11 +94,11 @@ namespace EasyIdentity.Domain
         {
         }
 
-        public static Either<UsernameError, Username> TryCreate(string username)
+        public static Either<InvalidUsernameError, Username> TryCreate(string username)
         {
             if (username.Length < 8)
             {
-                return Left<UsernameError>(new UsernameTooShort());
+                return Left<InvalidUsernameError>(new UsernameTooShort());
             }
             return Right(new Username(username));
         }
@@ -109,6 +106,17 @@ namespace EasyIdentity.Domain
 
     public sealed class Password : TypeWrapper<string>
     {
+        
+        private Password(string value) : base(value) {}
+
+        public static Either<PasswordError, Password> TryCreate(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                return Left<PasswordError>(new NoEmptyPassword());
+            }
+            return Right(new Password(password));
+        }
         public abstract class PasswordError : DomainError
         {
             public override ErrorSection Section => ErrorSection.Password;
@@ -118,20 +126,7 @@ namespace EasyIdentity.Domain
         {
             public override int ErrorCode => 10;
 
-            public override string Message => "The provided password can not be empty";
-        }
-
-        private Password(string value) : base(value)
-        {
-        }
-
-        public static Either<PasswordError, Password> TryCreate(string password)
-        {
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                return Left<PasswordError>(new NoEmptyPassword());
-            }
-            return Right(new Password(password));
+            public override string Message => "The provided password cannot be empty";
         }
     }
 }
