@@ -1,8 +1,9 @@
+using EasyIdentity.Core;
 using System;
 using Xunit;
 using static LanguageExt.Prelude;
 
-namespace EasyIdentity.Domain.Test
+namespace UserManagement.Test
 {
     public class UserTest
     {

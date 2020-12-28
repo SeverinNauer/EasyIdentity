@@ -1,4 +1,4 @@
-﻿namespace EasyIdentity.Domain
+﻿namespace EasyIdentity.Core
 {
     public abstract class DomainError
     {

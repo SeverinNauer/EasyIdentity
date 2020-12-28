@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
+    <PackageReference Include="LanguageExt.Core" />
   </ItemGroup>
 
 </Project>

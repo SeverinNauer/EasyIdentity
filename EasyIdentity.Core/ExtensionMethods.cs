@@ -1,7 +1,7 @@
 ﻿using LanguageExt;
 using static LanguageExt.Prelude;
 
-namespace EasyIdentity.Domain
+namespace EasyIdentity.Core
 {
     public static class ExtensionMethods
     {

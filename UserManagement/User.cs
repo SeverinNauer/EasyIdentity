@@ -1,8 +1,9 @@
-﻿using LanguageExt;
+﻿using EasyIdentity.Core;
+using LanguageExt;
 using System;
 using static LanguageExt.Prelude;
 
-namespace EasyIdentity.Domain
+namespace UserManagement
 {
     public enum EmailVerificationState
     {
@@ -39,7 +40,7 @@ namespace EasyIdentity.Domain
         public static Either<DomainError, User> TrySignUp(string email, string password, Option<string> username)
         {
             return username
-                .Map(username => EasyIdentity.Domain.Username.TryCreate(username).CastDomainError())
+                .Map(username => UserManagement.Username.TryCreate(username).CastDomainError())
                 .Match(
                     usnameEither => usnameEither.Bind(usernameValue => createUser(usernameValue)),
                     () => createUser(None)
@@ -69,7 +70,9 @@ namespace EasyIdentity.Domain
 
     public sealed class UserId : TypeWrapper<Guid>
     {
-        private UserId(Guid id) : base(id){}
+        private UserId(Guid id) : base(id)
+        {
+        }
 
         public static UserId Create(Guid id)
         {
@@ -106,8 +109,9 @@ namespace EasyIdentity.Domain
 
     public sealed class Password : TypeWrapper<string>
     {
-        
-        private Password(string value) : base(value) {}
+        private Password(string value) : base(value)
+        {
+        }
 
         public static Either<PasswordError, Password> TryCreate(string password)
         {
@@ -117,6 +121,7 @@ namespace EasyIdentity.Domain
             }
             return Right(new Password(password));
         }
+
         public abstract class PasswordError : DomainError
         {
             public override ErrorSection Section => ErrorSection.Password;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyIdentity.Domain
+namespace EasyIdentity.Core
 {
     public abstract class TypeWrapper<T>
     {
