@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EasyIdentity.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace UserManagement
 {
@@ -19,12 +20,12 @@ namespace UserManagement
             builder.Entity<UserEntity>()
                 .Property(u => u.Username)
                 .IsRequired(false)
-                .HasMaxLength(100);
+                .HasMaxLength(Username.MaxLength);
 
             builder.Entity<UserEntity>()
                 .Property(u => u.EmailAddress)
                 .IsRequired()
-                .HasMaxLength(200);
+                .HasMaxLength(EmailAddress.MaxLength);
 
             builder.Entity<UserEntity>()
                 .Property(u => u.Password)

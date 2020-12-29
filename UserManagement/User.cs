@@ -83,6 +83,8 @@ namespace UserManagement
 
     public sealed class Username : TypeWrapper<string>
     {
+        public const int MaxLength = 100;
+        public const int MinLength = 8;
         public abstract class InvalidUsernameError : DomainError
         {
             public override ErrorSection Section => ErrorSection.Username;
@@ -94,17 +96,24 @@ namespace UserManagement
             public override string Message => "The username must contain at least 8 characters";
         }
 
+        public class UsernameTooLong : InvalidUsernameError
+        {
+            public override int ErrorCode => 20;
+            public override string Message => "The username cannot be longer than 100 characters";
+        }
+
         private Username(string value) : base(value)
         {
         }
 
         public static Either<InvalidUsernameError, Username> TryCreate(string username)
         {
-            if (username.Length < 8)
+            return username.Length switch
             {
-                return Left<InvalidUsernameError>(new UsernameTooShort());
-            }
-            return Right(new Username(username));
+                < MinLength => new UsernameTooShort(),
+                > MaxLength => new UsernameTooLong(),
+                _ => new Username(username)
+            };
         }
     }
 
@@ -118,9 +127,9 @@ namespace UserManagement
         {
             if (string.IsNullOrWhiteSpace(password))
             {
-                return Left<PasswordError>(new NoEmptyPassword());
+                return new NoEmptyPassword();
             }
-            return Right(new Password(password));
+            return new Password(password);
         }
 
         public abstract class PasswordError : DomainError

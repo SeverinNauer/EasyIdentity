@@ -1,10 +1,11 @@
 ﻿using LanguageExt;
-using static LanguageExt.Prelude;
 
 namespace EasyIdentity.Core
 {
     public sealed class EmailAddress : TypeWrapper<string>
     {
+        public const int MaxLength = 255;
+
         private EmailAddress(string value) : base(value)
         {
         }
@@ -12,14 +13,15 @@ namespace EasyIdentity.Core
         public static Either<InvalidEmailError, EmailAddress> TryCreate(string emailaddress)
         {
             if (string.IsNullOrWhiteSpace(emailaddress))
-            {
-                return Left<InvalidEmailError>(new NoEmptyEmail());
-            }
+                return new NoEmptyEmail();
+
             if (!emailaddress.Contains("@"))
-            {
-                return Left<InvalidEmailError>(new NoAtProvided());
-            }
-            return Right(new EmailAddress(emailaddress));
+                return new NoAtProvided();
+
+            if(emailaddress.Length > MaxLength)
+                return new EmailTooLong();
+            
+            return new EmailAddress(emailaddress);
         }
 
         public abstract class InvalidEmailError : DomainError
@@ -37,6 +39,12 @@ namespace EasyIdentity.Core
         {
             public override int ErrorCode => 20;
             public override string Message => "The email can not be empty";
+        }
+
+        public class EmailTooLong : InvalidEmailError
+        {
+            public override int ErrorCode => 30;
+            public override string Message => "The email is too long";
         }
     }
 }
