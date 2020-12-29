@@ -15,16 +15,17 @@ namespace UserManagement
     {
         private record UserRecord(
             UserId UserId,
-            EmailAddress Email,
+            EmailAddress EmailAddress,
             Password Password,
             Option<Username> Username,
             EmailVerificationState EmailVerificationState);
 
         private readonly UserRecord userRecord;
         public UserId UserId => userRecord.UserId;
-        public EmailAddress Email => userRecord.Email;
+        public EmailAddress EmailAddress => userRecord.EmailAddress;
         public Password Password => userRecord.Password;
         public Option<Username> Username => userRecord.Username;
+        public EmailVerificationState EmailVerificationState => userRecord.EmailVerificationState;
         public bool EmailIsVerified => userRecord.EmailVerificationState == EmailVerificationState.Verified;
 
         public User(UserId userId, EmailAddress email, Password password, Option<Username> username, EmailVerificationState emailVerification)
@@ -64,7 +65,7 @@ namespace UserManagement
 
         public User ChangeEmailAddress(EmailAddress emailAddress)
         {
-            return new User(userRecord with { Email = emailAddress, EmailVerificationState = EmailVerificationState.Unverified });
+            return new User(userRecord with { EmailAddress = emailAddress, EmailVerificationState = EmailVerificationState.Unverified });
         }
     }
 

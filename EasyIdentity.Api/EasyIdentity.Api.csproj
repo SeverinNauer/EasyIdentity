@@ -9,4 +9,8 @@
     <PackageReference Include="LanguageExt.Core" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UserManagement\UserManagement.csproj" />
+  </ItemGroup>
+
 </Project>

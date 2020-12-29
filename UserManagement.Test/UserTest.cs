@@ -14,7 +14,7 @@ namespace UserManagement.Test
             Assert.True(userEither.IsRight);
             userEither.IfRight(user =>
             {
-                Assert.Equal("severin.nauer@gmail.com", user.Email);
+                Assert.Equal("severin.nauer@gmail.com", user.EmailAddress);
                 Assert.Equal("Test1234!", user.Password);
                 user.Username.IfSome(username =>
                 {
