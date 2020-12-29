@@ -18,7 +18,17 @@ namespace UserManagement
 
             builder.Entity<UserEntity>()
                 .Property(u => u.Username)
-                .IsRequired(false);
+                .IsRequired(false)
+                .HasMaxLength(100);
+
+            builder.Entity<UserEntity>()
+                .Property(u => u.EmailAddress)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            builder.Entity<UserEntity>()
+                .Property(u => u.Password)
+                .IsRequired();
         }
     }
 }
