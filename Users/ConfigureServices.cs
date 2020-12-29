@@ -4,18 +4,19 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace UserManagement
+namespace Users
 {
     public static class ConfigureServices
     {
-        public static void AddUserManagement(this IServiceCollection services)
+        public static void AddUsersContext(this IServiceCollection services)
         {
             services.AddDbContext<UserDbContext>();
             services.AddMediatR(typeof(ConfigureServices));
             services.AddControllers();
+            services.AddTransient<IPasswordHasher, PasswordHasher>();
         }
 
-        public static void AddUserManagement(this IEndpointRouteBuilder endpoints)
+        public static void AddUsersContext(this IEndpointRouteBuilder endpoints)
         {
             endpoints.MapControllers();
         }

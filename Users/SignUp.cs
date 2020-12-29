@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UserManagement
+namespace Users
 {
     public class SignupRequest
     {
@@ -34,20 +34,22 @@ namespace UserManagement
     public class SignupHandler : IRequestHandler<SignupCommand, Either<DomainError, User>>
     {
         private readonly UserDbContext dbContext;
+        private readonly IPasswordHasher passwordHasher;
 
-        public SignupHandler(UserDbContext dbContext)
+        public SignupHandler(UserDbContext dbContext, IPasswordHasher passwordHasher)
         {
             this.dbContext = dbContext;
+            this.passwordHasher = passwordHasher;
         }
 
-        public Task<Either<DomainError, User>> Handle(SignupCommand request, CancellationToken cancellationToken)
+        public async Task<Either<DomainError, User>> Handle(SignupCommand request, CancellationToken cancellationToken)
         {
-            var users = dbContext.Users.ToList();
-            var username = request.Username is null ? Option<string>.None : Option<string>.Some(request.Username);
-            var signupResult = User.TrySignUp(request.EmailAddress, request.Password, username);
-            signupResult.IfRight(user =>
+            var username = request.Username is null ? Option<string>.None : request.Username;
+            var encrypedPw = passwordHasher.Hash(request.Password);
+            var signupResult = User.TrySignUp(request.EmailAddress, encrypedPw, username);
+            await signupResult.ToAsync().IfRightAsync(async user =>
             {
-                var dbUser = new UserEntity
+                var dbUser = new UserModel
                 {
                     EmailAddress = user.EmailAddress,
                     EmailVerificationState = user.EmailVerificationState,
@@ -57,9 +59,9 @@ namespace UserManagement
                     Username = user.Username.MatchUnsafe<string?>(usname => usname, () => null)
                 };
                 dbContext.Users.Add(dbUser);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
             });
-            return Task.FromResult(signupResult);
+            return signupResult;
         }
     }
 }
