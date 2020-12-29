@@ -18,6 +18,10 @@ namespace UserManagement
                 .IsUnique();
 
             builder.Entity<UserEntity>()
+                .HasIndex(u => new { u.ProjectId, u.Username })
+                .IsUnique();
+
+            builder.Entity<UserEntity>()
                 .Property(u => u.Username)
                 .IsRequired(false)
                 .HasMaxLength(Username.MaxLength);
