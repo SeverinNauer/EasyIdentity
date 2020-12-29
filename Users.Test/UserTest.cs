@@ -3,7 +3,7 @@ using System;
 using Xunit;
 using static LanguageExt.Prelude;
 
-namespace UserManagement.Test
+namespace Users.Test
 {
     public class UserTest
     {

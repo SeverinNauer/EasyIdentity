@@ -1,37 +1,37 @@
 ﻿using EasyIdentity.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace UserManagement
+namespace Users
 {
     public class UserDbContext : DbContext
     {
-        public DbSet<UserEntity> Users => Set<UserEntity>(); 
+        public DbSet<UserModel> Users => Set<UserModel>(); 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
                    => optionsBuilder.UseNpgsql("Server = 127.0.0.1; Port = 5432; Database = easyidentity; User Id = postgres; Password = admin");
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<UserEntity>()
+            builder.Entity<UserModel>()
                 .HasKey(u => new { u.ProjectId, u.UserId });
 
-            builder.Entity<UserEntity>()
+            builder.Entity<UserModel>()
                 .HasIndex(u => new { u.ProjectId, u.EmailAddress })
                 .IsUnique();
 
-            builder.Entity<UserEntity>()
+            builder.Entity<UserModel>()
                 .HasIndex(u => new { u.ProjectId, u.Username })
                 .IsUnique();
 
-            builder.Entity<UserEntity>()
+            builder.Entity<UserModel>()
                 .Property(u => u.Username)
                 .IsRequired(false)
                 .HasMaxLength(Username.MaxLength);
 
-            builder.Entity<UserEntity>()
+            builder.Entity<UserModel>()
                 .Property(u => u.EmailAddress)
                 .IsRequired()
                 .HasMaxLength(EmailAddress.MaxLength);
 
-            builder.Entity<UserEntity>()
+            builder.Entity<UserModel>()
                 .Property(u => u.Password)
                 .IsRequired();
         }

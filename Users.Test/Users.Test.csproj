@@ -17,9 +17,8 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
-
 	<ItemGroup>
-	  <ProjectReference Include="..\UserManagement\UserManagement.csproj" />
+	  <ProjectReference Include="..\Users\Users.csproj" />
 	</ItemGroup>
 
 </Project>

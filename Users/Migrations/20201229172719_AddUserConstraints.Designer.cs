@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UserManagement;
+using Users;
 
-namespace UserManagement.Migrations
+namespace Users.Migrations
 {
     [DbContext(typeof(UserDbContext))]
     [Migration("20201229172719_AddUserConstraints")]

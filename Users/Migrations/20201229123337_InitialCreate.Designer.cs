@@ -3,15 +3,12 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UserManagement;
 
-namespace UserManagement.Migrations
+namespace Users.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20201229182154_AddUsernameIndex")]
-    partial class AddUsernameIndex
+    [Migration("20201229123337_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,8 +28,7 @@ namespace UserManagement.Migrations
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("text");
 
                     b.Property<int>("EmailVerificationState")
                         .HasColumnType("integer");
@@ -42,15 +38,11 @@ namespace UserManagement.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Username")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.HasKey("ProjectId", "UserId");
 
                     b.HasIndex("ProjectId", "EmailAddress")
-                        .IsUnique();
-
-                    b.HasIndex("ProjectId", "Username")
                         .IsUnique();
 
                     b.ToTable("Users");
