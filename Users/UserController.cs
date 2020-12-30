@@ -19,7 +19,7 @@ namespace Users
         [HttpPost("signup")]
         public async Task<IActionResult> Signup([FromBody] SignupRequest request)
         {
-            var cmd = new SignupCommand(Guid.NewGuid(), request.EmailAddress, request.Password, request.Username);
+            var cmd = new SignupCommand(new ProjectData("", ""), request.EmailAddress, request.Password, request.Username);
             var result = await mediator.Send(cmd);
             return result.Match<IActionResult>(user => Ok(), BadRequest);
         }

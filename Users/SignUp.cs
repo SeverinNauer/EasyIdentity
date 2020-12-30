@@ -1,6 +1,7 @@
 ﻿using EasyIdentity.Core;
 using LanguageExt;
 using MediatR;
+using Projects.Contracts;
 using System;
 using System.Linq;
 using System.Threading;
@@ -14,17 +15,19 @@ namespace Users
         public string Password { get; set; } = "";
         public string? Username { get; set; }
     }
+    public record ProjectData(string ClientId, string ClientSecret);
+
     public class SignupCommand : IRequest<Either<DomainError, User>>
     {
-        public Guid ProjectId { get; }
+        public ProjectData ProjectData { get; }
         public string EmailAddress { get; }
         public string Password { get; }
 
         public string? Username { get; }
 
-        public SignupCommand(Guid projectId, string emailAddress, string password, string? username)
+        public SignupCommand(ProjectData projectData, string emailAddress, string password, string? username)
         {
-            ProjectId = projectId;
+            ProjectData = projectData;
             EmailAddress = emailAddress;
             Password = password;
             Username = username;
@@ -35,15 +38,18 @@ namespace Users
     {
         private readonly UserDbContext dbContext;
         private readonly IPasswordHasher passwordHasher;
+        private readonly IQueryProjectId projectQuery;
 
-        public SignupHandler(UserDbContext dbContext, IPasswordHasher passwordHasher)
+        public SignupHandler(UserDbContext dbContext, IPasswordHasher passwordHasher, IQueryProjectId projectQuery)
         {
             this.dbContext = dbContext;
             this.passwordHasher = passwordHasher;
+            this.projectQuery = projectQuery;
         }
 
         public async Task<Either<DomainError, User>> Handle(SignupCommand request, CancellationToken cancellationToken)
         {
+            var projectId = projectQuery.Query(request.ProjectData.ClientId, request.ProjectData.ClientSecret); //TODO work with clientid and secret
             var username = request.Username is null ? Option<string>.None : request.Username;
             var encrypedPw = passwordHasher.Hash(request.Password);
             var signupResult = User.TrySignUp(request.EmailAddress, encrypedPw, username);
@@ -54,7 +60,7 @@ namespace Users
                     EmailAddress = user.EmailAddress,
                     EmailVerificationState = user.EmailVerificationState,
                     Password = user.Password,
-                    ProjectId = request.ProjectId,
+                    ProjectId = projectId,
                     UserId = user.UserId,
                     Username = user.Username.MatchUnsafe<string?>(usname => usname, () => null)
                 };
