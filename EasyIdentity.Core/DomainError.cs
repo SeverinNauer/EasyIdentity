@@ -13,5 +13,6 @@
         EmailAddress = 1000,
         Username = 1010,
         Password = 1020,
+        Signup = 2000,
     }
 }
