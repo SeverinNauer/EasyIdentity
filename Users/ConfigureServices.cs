@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using EntityFramework.ErrorHandler;
+using EntityFramework.ErrorHandler.PostgreSQL;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ namespace Users
             services.AddMediatR(typeof(ConfigureServices));
             services.AddControllers();
             services.AddTransient<IPasswordHasher, PasswordHasher>();
+            DbErrorHandlerConfiguration.Config.AddPostgres();
         }
 
         public static void AddUsersContext(this IEndpointRouteBuilder endpoints)

@@ -10,6 +10,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+		<PackageReference Include="EntityFramework.ErrorHandler" Version="0.2.1" />
+		<PackageReference Include="EntityFramework.ErrorHandler.PostgreSQL" Version="0.2.1" />
 		<PackageReference Include="LanguageExt.Core" />
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />

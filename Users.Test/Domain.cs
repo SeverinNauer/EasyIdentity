@@ -5,7 +5,7 @@ using static LanguageExt.Prelude;
 
 namespace Users.Test
 {
-    public class UserTest
+    public class Domain
     {
         [Fact]
         public void SignUpSuccess()

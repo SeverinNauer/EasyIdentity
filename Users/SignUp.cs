@@ -1,21 +1,22 @@
 ﻿using EasyIdentity.Core;
 using LanguageExt;
 using MediatR;
-using Npgsql;
 using Projects.Contracts;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using EntityFramework.ErrorHandler;
 using static LanguageExt.Prelude;
+using static Users.SignupError;
 
 namespace Users
 {
     public record SignupRequest(string EmailAddress, string Password, string? Username);
-    
+
     public record ProjectData(string ClientId, string ClientSecret);
 
     public record SignupCommand(ProjectData ProjectData, string EmailAddress, string Password, string? Username) : IRequest<Either<DomainError, User>>;
-    
+
     public class SignupHandler : IRequestHandler<SignupCommand, Either<DomainError, User>>
     {
         private readonly UserDbContext dbContext;
@@ -28,26 +29,26 @@ namespace Users
             this.passwordHasher = passwordHasher;
             this.projectQuery = projectQuery;
         }
-        
+
         private async Task<Either<DomainError, User>> SaveUser(User user, Guid projectId)
         {
-               var dbUser = UserModel.FromDomain(user, projectId);
-                dbContext.Users.Add(dbUser);
-                return await TryAsync(async () => await dbContext.SaveChangesAsync())
-                        .Match<int, Either<SignupError, User>>(succ => user, exn =>
-                          {
-                              if (exn.GetBaseException() is PostgresException ex)
-                              {
-                                  return (ex.SqlState, ex.ConstraintName) switch
-                                  {
-                                      ("23505", SignupError.EmailAlreadyUsed.ConstraintName) => new SignupError.EmailAlreadyUsed(),
-                                      ("23505", SignupError.UsernameAlreadyUsed.ConstraintName) => new SignupError.UsernameAlreadyUsed(),
-                                      _ => new SignupError()
-                                  };
-                              }
-                              return new SignupError();
-                          }).CastDomainError();
-
+            var dbUser = UserModel.FromDomain(user, projectId);
+            dbContext.Users.Add(dbUser);
+            return await TryAsync(async () => await dbContext.SaveChangesAsync())
+                    .Match<int, Either<SignupError, User>>(
+                        succ => user,
+                        exn =>
+                            exn
+                            .ToDbError<SignupError>()
+                            .Catch<UniqueViolationError>(error =>
+                                error.ConstraintName switch
+                                {
+                                    EmailAlreadyUsed.ConstraintName => new EmailAlreadyUsed(),
+                                    UsernameAlreadyUsed.ConstraintName => new UsernameAlreadyUsed(),
+                                    _ => new SignupError()
+                                })
+                             .Handle(err => new SignupError())
+                     ).CastDomainError();
         }
 
         public async Task<Either<DomainError, User>> Handle(SignupCommand request, CancellationToken cancellationToken)
