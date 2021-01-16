@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.targets = Directory.Build.targets
 		Directory.Packages.props = Directory.Packages.props
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users", "Users\Users.csproj", "{CEDBC89B-67D0-40C8-A40B-CDA2B419ABA6}"
@@ -23,9 +24,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projects", "Projects", "{79
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects", "Projects\Projects.csproj", "{8DBF06DB-E78C-4296-82A0-A61EBB56B7FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projects.Test", "Projects.Test\Projects.Test.csproj", "{5800B480-FE1B-4513-B4D8-0EBBCAE14F71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects.Test", "Projects.Test\Projects.Test.csproj", "{5800B480-FE1B-4513-B4D8-0EBBCAE14F71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Projects.Contracts", "Projects.Contracts\Projects.Contracts.csproj", "{9EC472DD-97FF-420B-8C8A-B05244A83005}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projects.Contracts", "Projects.Contracts\Projects.Contracts.csproj", "{9EC472DD-97FF-420B-8C8A-B05244A83005}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
