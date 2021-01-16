@@ -73,7 +73,6 @@ namespace Users
         {
             public const string ConstraintName = "IX_Users_ProjectId_EmailAddress";
             public override int ErrorCode => 10;
-
             public override string Message => "User with this email already exists";
         }
 

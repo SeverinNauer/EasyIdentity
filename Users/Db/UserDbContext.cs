@@ -7,7 +7,7 @@ namespace Users
     {
         public DbSet<UserModel> Users => Set<UserModel>(); 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-                   => optionsBuilder.UseNpgsql("Server = 127.0.0.1; Port = 5432; Database = easyidentity; User Id = postgres; Password = admin");
+                   => optionsBuilder.UseNpgsql("Server = 127.0.0.1; Port = 5432; Database = easyidentity; User Id = postgres; Password = root");
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<UserModel>()
