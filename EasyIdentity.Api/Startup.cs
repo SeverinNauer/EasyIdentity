@@ -28,6 +28,7 @@ namespace EasyIdentity.Api
 
             app.UseRouting();
 
+            app.EnsureMigrationOfContext<UserDbContext>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.AddUsersContext();

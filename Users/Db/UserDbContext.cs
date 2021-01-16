@@ -5,9 +5,12 @@ namespace Users
 {
     public class UserDbContext : DbContext
     {
-        public DbSet<UserModel> Users => Set<UserModel>(); 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-                   => optionsBuilder.UseNpgsql("Server = 127.0.0.1; Port = 5432; Database = easyidentity; User Id = postgres; Password = root");
+        public UserDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        public DbSet<UserModel> Users => Set<UserModel>();
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<UserModel>()
