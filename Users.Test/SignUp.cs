@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Users.Test
+namespace Users.Test.Integration
 {
     public class SignUp : IClassFixture<DbFixture>, IDisposable
     {

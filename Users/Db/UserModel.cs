@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EasyIdentity.Core;
+using LanguageExt;
+using System;
 
 namespace Users
 {
@@ -22,6 +24,18 @@ namespace Users
                 UserId = user.UserId,
                 Username = user.Username.MatchUnsafe<string?>(usname => usname, () => null)
             };
+        }
+
+        public Either<DomainError, User> ToDomain()
+        {
+            var userId = Users.UserId.Create(UserId);
+            return 
+                from username in (Username is null ?
+                    Option<Username>.None
+                    : Users.Username.TryCreate(Username).Match<Either<DomainError, Option<Username>>>(u => u.AsOption(), err => err))
+                from email in EasyIdentity.Core.EmailAddress.TryCreate(EmailAddress).CastDomainError()
+                from password in Users.Password.TryCreate(Password).CastDomainError()
+                select new User(userId, email, password, username, EmailVerificationState);
         }
     }
 }

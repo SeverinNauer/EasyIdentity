@@ -3,7 +3,7 @@ using System;
 using Xunit;
 using static LanguageExt.Prelude;
 
-namespace Users.Test
+namespace Users.Test.Unit
 {
     public class Domain
     {
